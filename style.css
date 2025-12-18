@@ -1,102 +1,25 @@
-/* Official Look for PC/Mobile */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
-
-body {
-    background: linear-gradient(135deg, #5b21b6 0%, #1e40af 100%);
-    color: white; min-height: 100vh; overflow-x: hidden;
-}
-.admin-files-grid {
+.admin-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 15px;
-    background: rgba(255, 255, 255, 0.05);
     padding: 20px;
-    border-radius: 15px;
-    border: 1px dashed rgba(255, 255, 255, 0.2);
-}
-
-.admin-file-card {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    text-align: center;
-    border-radius: 10px;
-}
-
-.download-link {
-    display: inline-block;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
     margin-top: 10px;
-    padding: 5px 10px;
+}
+.admin-card {
+    background: #1e1b4b;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+}
+.admin-card a {
+    display: block;
+    margin-top: 8px;
     background: #4CAF50;
     color: white;
-    text-decoration: none;
-    font-size: 12px;
+    padding: 5px;
     border-radius: 5px;
+    text-decoration: none;
+    font-size: 11px;
 }
-.bubbles-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-.bubble { position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%; animation: rise 10s infinite; }
-@keyframes rise { from { transform: translateY(100vh); opacity: 0; } to { transform: translateY(-10vh); opacity: 0.5; } }
-
-.top-nav {
-    display: flex; justify-content: space-between; padding: 15px 5%;
-    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
-}
-.logo { font-size: 1.6rem; font-weight: bold; margin-left: 10px; }
-.menu-trigger { cursor: pointer; font-size: 1.4rem; }
-
-/* Side Panel */
-.side-panel {
-    position: fixed; right: -320px; top: 0; width: 300px; height: 100%;
-    background: rgba(255, 255, 255, 0.95); color: #1a1a1a; z-index: 1000;
-    transition: 0.4s; padding: 30px 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.3);
-}
-.side-panel.active { right: 0; }
-.panel-header { font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 20px; color: #5b21b6; }
-.panel-item { padding: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-radius: 10px; transition: 0.3s; }
-.panel-item:hover { background: #f3f4f6; color: #5b21b6; }
-
-/* Main UI */
-.dashboard-container { max-width: 1100px; margin: 50px auto; padding: 0 5%; }
-.main-title { font-size: 4.5rem; letter-spacing: -2px; }
-.description { opacity: 0.8; max-width: 700px; line-height: 1.6; margin: 15px 0 40px 0; }
-
-/* Rabbit Animation Fix */
-.rabbit-container { height: 120px; position: relative; width: 100%; }
-.rabbit-img { width: 80px; position: absolute; animation: moveRabbit 12s infinite linear; }
-@keyframes moveRabbit {
-    0% { left: -100px; transform: scaleX(1); }
-    48% { transform: scaleX(1); }
-    50% { left: 90%; transform: scaleX(-1); }
-    98% { transform: scaleX(-1); }
-    100% { left: -100px; transform: scaleX(1); }
-}
-
-/* Drop Area */
-.main-grid { display: flex; gap: 50px; flex-wrap: wrap; }
-.drop-zone {
-    background: rgba(255, 255, 255, 0.15); border: 2px dashed rgba(255,255,255,0.4);
-    padding: 50px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; cursor: pointer;
-}
-.icon-box { background: rgba(255,255,255,0.2); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-radius: 12px; }
-.warning-mode {
-    background: rgba(255, 0, 0, 0.15) !important;
-    border: 1px solid #ff4444;
-}
-.warning-mode:hover {
-    background: rgba(255, 0, 0, 0.3) !important;
-}
-.warning-mode i { color: #ff4444; }
-/* Buttons */
-.btn {
-    display: block; width: 100%; max-width: 350px; padding: 16px; margin-top: 15px;
-    border-radius: 50px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s;
-    background: rgba(255,255,255,0.2); color: white; text-align: left; padding-left: 30px;
-}
-.btn:hover { background: rgba(255,255,255,0.4); transform: translateY(-2px); }
-.section-label { margin-bottom: 15px; font-size: 1.2rem; }
-
-@media (max-width: 768px) {
-    .main-title { font-size: 3rem; }
-    .main-grid { flex-direction: column; }
-}
-
-
