@@ -1,17 +1,18 @@
-/* --- Global Styles --- */
+/* --- Global Styles & Variables --- */
 :root {
     --primary: #5b21b6;
     --secondary: #7c3aed;
     --bg-dark: #0f172a;
     --glass: rgba(255, 255, 255, 0.08);
     --text-light: #f8fafc;
+    --accent-green: #4CAF50;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -36,8 +37,8 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 5%;
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--glass);
     position: sticky;
     top: 0;
@@ -45,9 +46,9 @@ body {
 }
 
 .logo {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: 800;
-    background: linear-gradient(to right, #8b5cf6, #d946ef);
+    background: linear-gradient(to right, #a78bfa, #f472b6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -55,7 +56,8 @@ body {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    cursor: pointer;
 }
 
 /* --- Side Panel --- */
@@ -65,12 +67,12 @@ body {
     top: 0;
     width: 300px;
     height: 100%;
-    background: rgba(30, 27, 75, 0.95);
+    background: rgba(30, 27, 75, 0.98);
     backdrop-filter: blur(20px);
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-    transition: 0.4s ease-in-out;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.6);
+    transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
-    padding: 30px 20px;
+    padding: 40px 25px;
 }
 
 .side-panel.active {
@@ -78,11 +80,12 @@ body {
 }
 
 .panel-header {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-size: 1.3rem;
+    font-weight: 700;
     margin-bottom: 30px;
     border-bottom: 1px solid var(--glass);
-    padding-bottom: 10px;
+    padding-bottom: 15px;
+    color: #a78bfa;
 }
 
 .panel-item {
@@ -93,153 +96,179 @@ body {
     border-radius: 12px;
     cursor: pointer;
     transition: 0.3s;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .panel-item:hover {
     background: var(--glass);
+    transform: translateX(-5px);
 }
 
-/* --- Dashboard Elements --- */
+/* --- Dashboard UI --- */
 .dashboard-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
+    max-width: 850px;
+    margin: 50px auto;
+    padding: 0 25px;
     text-align: center;
 }
 
 .main-title {
-    font-size: 3rem;
-    margin-bottom: 10px;
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 15px;
+    letter-spacing: -1px;
 }
 
 .description {
-    opacity: 0.7;
-    font-size: 0.9rem;
-    margin-bottom: 30px;
+    opacity: 0.8;
+    font-size: 1rem;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    line-height: 1.6;
 }
 
 /* --- Rabbit Animation --- */
 .rabbit-container {
-    margin: 20px 0;
-    animation: bounce 2s infinite;
+    margin: 30px 0;
+    animation: floating 2.5s ease-in-out infinite;
 }
 
-@keyframes bounce {
+@keyframes floating {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+    50% { transform: translateY(-20px); }
 }
 
-/* --- Drop Zone --- */
+/* --- Drop Backup Zone --- */
 .drop-zone {
     background: var(--glass);
-    border: 2px dashed rgba(139, 92, 246, 0.3);
-    border-radius: 20px;
-    padding: 40px;
-    transition: 0.3s;
+    border: 2px dashed rgba(139, 92, 246, 0.4);
+    border-radius: 25px;
+    padding: 60px 40px;
+    transition: 0.4s;
     cursor: pointer;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .drop-zone:hover {
-    background: rgba(139, 92, 246, 0.1);
+    background: rgba(139, 92, 246, 0.15);
     border-color: #8b5cf6;
+    transform: scale(1.02);
 }
 
-/* --- Buttons --- */
-.action-section {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    max-width: 300px;
-    margin: 0 auto;
-}
-
-.btn {
-    padding: 12px 25px;
-    border-radius: 10px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    transition: 0.3s;
-}
-
-.google-btn { background: #fff; color: #000; }
-.camera-btn { background: var(--primary); color: #fff; }
-
-.btn:hover { transform: scale(1.05); }
-
-/* --- Admin Response Section (New Area) --- */
-.response-section {
-    margin-top: 50px;
-    text-align: left;
-}
-
-.section-label {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+.drop-zone i {
+    font-size: 3.5rem;
     color: #8b5cf6;
     margin-bottom: 15px;
 }
 
+/* --- Action Buttons --- */
+.action-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+.btn {
+    padding: 14px 28px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+.google-btn { background: #ffffff; color: #000000; }
+.camera-btn { background: var(--primary); color: #ffffff; box-shadow: 0 4px 15px rgba(91, 33, 182, 0.4); }
+
+.btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+}
+
+/* --- Admin Response Grid (User Downloads) --- */
+.response-section {
+    margin-top: 60px;
+    text-align: left;
+}
+
+.section-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: #a78bfa;
+    margin-bottom: 20px;
+    font-weight: 800;
+}
+
 .admin-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 20px;
-    border-radius: 15px;
-    min-height: 100px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 25px;
+    border-radius: 20px;
+    min-height: 120px;
     border: 1px solid var(--glass);
 }
 
 .admin-card {
-    background: rgba(30, 27, 75, 0.8);
-    padding: 15px;
-    border-radius: 12px;
+    background: rgba(30, 27, 75, 0.9);
+    padding: 20px;
+    border-radius: 15px;
     text-align: center;
-    border: 1px solid var(--glass);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    transition: 0.3s;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-green);
 }
 
 .admin-card i {
-    font-size: 2rem;
-    color: #4CAF50;
-    margin-bottom: 10px;
+    font-size: 2.5rem;
+    color: var(--accent-green);
+    margin-bottom: 12px;
 }
 
 .admin-card a {
     display: block;
-    margin-top: 10px;
-    padding: 8px;
-    background: #4CAF50;
+    margin-top: 12px;
+    padding: 10px;
+    background: var(--accent-green);
     color: white;
     text-decoration: none;
-    font-size: 0.75rem;
-    font-weight: bold;
-    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border-radius: 8px;
     transition: 0.3s;
 }
 
 .admin-card a:hover {
-    background: #45a049;
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    background: #3d8b40;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
 }
 
 .empty-msg {
     grid-column: 1 / -1;
     text-align: center;
-    opacity: 0.5;
+    opacity: 0.6;
     font-style: italic;
-    padding: 20px;
+    padding: 30px;
+    color: #94a3b8;
 }
 
-/* --- Responsive --- */
-@media (max-width: 600px) {
-    .main-title { font-size: 2rem; }
-    .side-panel { width: 80%; }
+/* --- Responsive Adjustments --- */
+@media (max-width: 640px) {
+    .main-title { font-size: 2.5rem; }
+    .side-panel { width: 85%; }
+    .drop-zone { padding: 40px 20px; }
 }
