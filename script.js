@@ -1,8 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
-// Unga screenshot-la iruntha correct config:
+// Unga Firebase Project details
 const firebaseConfig = {
   apiKey: "AIzaSyBLC6enWWKAr309ys-4NDjnhch4r1Psw0E",
   authDomain: "picmaster-59602.firebaseapp.com",
@@ -14,37 +13,23 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const storage = getStorage();
+const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 const dropArea = document.getElementById('drop-area');
-const statusMsg = document.getElementById('status-msg');
 
-// Click panna Login aahi file picker open aagum
+// Login Click Logic
 dropArea.addEventListener('click', async () => {
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
+        alert("Success! Logged in as: " + user.displayName);
         
-        let input = document.createElement('input');
-        input.type = 'file';
-        input.onchange = _ => {
-            let file = input.files[0];
-            uploadFile(file, user);
-        };
-        input.click();
+        // Login aanathum message maathalaam
+        document.getElementById('drop-area').innerHTML = "<h3>Login Success!</h3><p>Server-ku file anuppa ready...</p>";
+        
     } catch (error) {
-        alert("Login Failed: " + error.message);
+        console.error(error);
+        alert("Login Error: " + error.message);
     }
 });
-
-async function uploadFile(file, user) {
-    const storageRef = ref(storage, 'uploads/' + user.email + '/' + file.name);
-    dropArea.innerHTML = "<p>Uploading...</p>";
-    
-    await uploadBytes(storageRef, file);
-    
-    dropArea.classList.add('hidden');
-    statusMsg.classList.remove('hidden');
-}
