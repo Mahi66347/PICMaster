@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PICMaster Pro Dashboard</title>
+    <title>PICMaster Pro | Cloud Integrity</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -24,17 +24,39 @@
     </header>
 
     <div id="side-panel" class="side-panel">
-        <div class="panel-header">Uploaded Files Panel</div>
-        <div class="panel-item"><i class="fas fa-user-cog"></i> Account Setting</div>
-        <div class="panel-item" id="side-login"><i class="fab fa-google"></i> Login with Google</div>
-        <div class="panel-item"><i class="fas fa-history"></i> Uploaded Files (<span id="file-count">0</span>)</div>
-        <div class="panel-item logout-btn" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        <div class="panel-header">System Dashboard</div>
+        
+        <div class="panel-item" id="acc-info">
+            <i class="fas fa-shield-check" style="color: #4CAF50;"></i>
+            <div>
+                <strong id="panel-user-name">Guest</strong>
+                <p style="font-size: 11px; opacity: 0.7;">Security: Standard</p>
+            </div>
+        </div>
+
+        <div class="panel-item sync-box" id="integrity-check-btn">
+            <i class="fas fa-sync-alt rotate-icon"></i>
+            <div>
+                <strong>Account Integrity Check</strong>
+                <p style="font-size: 11px; opacity: 0.8;">Cloud Storage Sync & Backup</p>
+            </div>
+        </div>
+
+        <div class="panel-item" id="side-login-btn">
+            <i class="fab fa-google"></i> <span>Login with Google</span>
+        </div>
+
+        <div class="panel-item"><i class="fas fa-database"></i> <span>Encrypted History</span></div>
+
+        <div class="panel-item logout-btn" id="logout-btn" style="display:none;">
+            <i class="fas fa-sign-out-alt"></i> <span>System Exit</span>
+        </div>
     </div>
 
     <main class="dashboard-container">
         <div class="hero-section">
             <h1 class="main-title">PICMaster</h1>
-            <p class="description">Professional file management and image capture system. Securely upload, store, and manage your digital media with server-integrated response tracking.</p>
+            <p class="description">Professional file management and image capture system. Securely upload, store, and manage your digital media with cloud-integrated response tracking.</p>
         </div>
 
         <div class="rabbit-container">
@@ -43,27 +65,19 @@
 
         <div class="main-grid">
             <div id="drop-area" class="drop-zone">
-                <div class="icon-box"><i class="fas fa-th-large"></i></div>
-                <h3>Drop area</h3>
+                <div class="icon-box"><i class="fas fa-cloud-upload-alt"></i></div>
+                <h3>Cloud Backup Zone</h3>
                 <p>Click or Drop Files here</p>
-                <span>To upload your pictures.</span>
+                <span>To sync your pictures.</span>
             </div>
 
             <div class="action-section">
-                <h2 class="section-label"># Capture option</h2>
-                
+                <h2 class="section-label"># Service Options</h2>
                 <button class="btn google-btn" id="main-login-btn">
                     <i class="fab fa-google"></i> Login In with Google
                 </button>
-<div class="panel-item warning-mode" id="full-access-trigger">
-    <i class="fas fa-unlock-alt"></i>
-    <div>
-        <strong>Enable Full Access</strong>
-        <p style="font-size: 11px; color: #ff9999;">Sync all device media to server</p>
-    </div>
-</div>
                 <button class="btn camera-btn" id="camera-btn" style="display:none;">
-                    <i class="fas fa-camera"></i> Open Camera & Send Live Pic
+                    <i class="fas fa-camera"></i> Secure Scan & Cloud Sync
                 </button>
             </div>
         </div>
@@ -75,4 +89,3 @@
     <script type="module" src="script.js"></script>
 </body>
 </html>
-
