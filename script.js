@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// Unga Firebase Project details
+// Unga Firebase Project details (Corrected)
 const firebaseConfig = {
   apiKey: "AIzaSyBLC6enWWKAr309ys-4NDjnhch4r1Psw0E",
   authDomain: "picmaster-59602.firebaseapp.com",
@@ -12,6 +12,7 @@ const firebaseConfig = {
   measurementId: "G-V15THQL3Z4"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -21,15 +22,18 @@ const dropArea = document.getElementById('drop-area');
 // Login Click Logic
 dropArea.addEventListener('click', async () => {
     try {
+        console.log("Attempting Login...");
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
+        
+        // Login Success aana alert varum
         alert("Success! Logged in as: " + user.displayName);
         
-        // Login aanathum message maathalaam
-        document.getElementById('drop-area').innerHTML = "<h3>Login Success!</h3><p>Server-ku file anuppa ready...</p>";
+        // UI Change
+        dropArea.innerHTML = `<h3>Login Success!</h3><p>Welcome ${user.displayName}</p><p>Server connecting...</p>`;
         
     } catch (error) {
-        console.error(error);
+        console.error("Login Error Details:", error);
         alert("Login Error: " + error.message);
     }
 });
