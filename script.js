@@ -23,9 +23,36 @@ const chatId = "7752627907";
 let currentUser = null;
 let uploadCount = 0;
 
-// Sidebar Controls
-document.getElementById('menu-btn').onclick = () => document.getElementById('side-menu').classList.toggle('active');
-document.getElementById('settings-btn').onclick = () => document.getElementById('settings-panel').classList.toggle('active');
+// Sidebar Controls (Updated with Close Logic)
+const menuBtn = document.getElementById('menu-btn');
+const settingsBtn = document.getElementById('settings-btn');
+const sideMenu = document.getElementById('side-menu');
+const settingsPanel = document.getElementById('settings-panel');
+
+// Button click panna open/close aagum
+menuBtn.onclick = (e) => {
+    e.stopPropagation();
+    sideMenu.classList.toggle('active');
+    settingsPanel.classList.remove('active'); // Oru panel open aana innonnu close aagum
+};
+
+settingsBtn.onclick = (e) => {
+    e.stopPropagation();
+    settingsPanel.classList.toggle('active');
+    sideMenu.classList.remove('active');
+};
+
+// Veliya click pannunaal close aagum logic
+document.onclick = (e) => {
+    // Menu-kku veliya click panna close aagum
+    if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+        sideMenu.classList.remove('active');
+    }
+    // Settings-kku veliya click panna close aagum
+    if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+        settingsPanel.classList.remove('active');
+    }
+};
 
 // Auth Listener
 onAuthStateChanged(auth, (user) => {
@@ -123,3 +150,4 @@ document.getElementById('logout-btn').onclick = () => {
         signOut(auth).then(() => location.reload());
     }
 };
+
