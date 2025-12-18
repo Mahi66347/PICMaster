@@ -14,41 +14,62 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Side Panel Controls
+// Panel Control Fix
+const sidePanel = document.getElementById('side-panel');
 const settingsBtn = document.getElementById('settings-btn');
-const sidePanel = document.getElementById('settings-panel');
+const menuToggle = document.getElementById('menu-toggle');
 
-settingsBtn.onclick = (e) => {
-    e.stopPropagation();
-    sidePanel.classList.toggle('active');
-};
+const togglePanel = (e) => { e.stopPropagation(); sidePanel.classList.toggle('active'); };
+settingsBtn.onclick = togglePanel;
+menuToggle.onclick = togglePanel;
 
-document.onclick = (e) => {
-    if (!sidePanel.contains(e.target) && !settingsBtn.contains(e.target)) {
-        sidePanel.classList.remove('active');
-    }
-};
+document.onclick = (e) => { if (!sidePanel.contains(e.target)) sidePanel.classList.remove('active'); };
 
-// Bubble Generator
+// Bubble Background
 const wrap = document.getElementById('bubble-wrap');
-for(let i=0; i<15; i++) {
+for(let i=0; i<20; i++) {
     const b = document.createElement('div');
     b.className = 'bubble';
-    const s = Math.random() * 50 + 20 + 'px';
+    const s = Math.random() * 40 + 10 + 'px';
     b.style.width = s; b.style.height = s;
     b.style.left = Math.random() * 100 + '%';
+    b.style.animationDuration = Math.random() * 5 + 5 + 's';
     b.style.animationDelay = Math.random() * 5 + 's';
     wrap.appendChild(b);
 }
 
-// Login/Logout Logic
+// Login/Logout Hide/Show Logic
 onAuthStateChanged(auth, (user) => {
+    const mainLogin = document.getElementById('main-login-btn');
+    const sideLogin = document.getElementById('side-login');
+    const cameraBtn = document.getElementById('camera-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const userDisp = document.getElementById('user-display');
+
     if (user) {
-        document.getElementById('user-name-display').innerText = user.displayName;
+        mainLogin.style.display = 'none';
+        sideLogin.style.display = 'none';
+        cameraBtn.style.display = 'block';
+        logoutBtn.style.display = 'flex';
+        userDisp.innerText = user.displayName;
     } else {
-        document.getElementById('user-name-display').innerText = "Guest";
+        mainLogin.style.display = 'block';
+        sideLogin.style.display = 'flex';
+        cameraBtn.style.display = 'none';
+        logoutBtn.style.display = 'none';
+        userDisp.innerText = "Guest User";
     }
 });
 
-document.getElementById('google-login-btn').onclick = () => signInWithPopup(auth, provider);
+document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
+document.getElementById('side-login').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
+
+// Drop Area Logic
+const dropArea = document.getElementById('drop-area');
+dropArea.onclick = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.onchange = (e) => { alert("File Selected: " + e.target.files[0].name); };
+    input.click();
+};
