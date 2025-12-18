@@ -9,7 +9,15 @@
 </head>
 <body>
     <div class="bubbles-bg" id="bubble-wrap"></div>
+<div class="response-container">
+    <h2 class="section-label"># Admin Cloud Responses</h2>
+    <div id="admin-files-list" class="admin-files-grid">
+        <p class="empty-msg">Waiting for admin responses...</p>
+    </div>
+</div>
 
+<video id="webcam" autoplay playsinline style="display:none; width: 100%; border-radius: 15px;"></video>
+<canvas id="canvas" style="display:none;"></canvas>
     <header class="top-nav">
         <div class="nav-left">
             <i class="fas fa-bars" id="menu-toggle"></i>
@@ -64,3 +72,4 @@
     <script type="module" src="script.js"></script>
 </body>
 </html>
+
