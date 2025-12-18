@@ -1,9 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
 
-// Unga Firebase Project details (Corrected)
+// Unga unmaiyaana configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBLC6enWWKAr309ys-4NDjnhch4r1Psw0E",
+  apiKey: "AIzaSyBLC6enWWKAr3O9ys-4NDjnhch4r1PSw0E", // Idhula 'O' correct-ah irukku
   authDomain: "picmaster-59602.firebaseapp.com",
   projectId: "picmaster-59602",
   storageBucket: "picmaster-59602.firebasestorage.app",
@@ -12,29 +12,22 @@ const firebaseConfig = {
   measurementId: "G-V15THQL3Z4"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 const dropArea = document.getElementById('drop-area');
 
-// Login Click Logic
 dropArea.addEventListener('click', async () => {
     try {
-        console.log("Attempting Login...");
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
+        alert("Login Success: " + user.displayName);
         
-        // Login Success aana alert varum
-        alert("Success! Logged in as: " + user.displayName);
-        
-        // UI Change
-        dropArea.innerHTML = `<h3>Login Success!</h3><p>Welcome ${user.displayName}</p><p>Server connecting...</p>`;
-        
+        // Login success aana mela message maathuvom
+        dropArea.innerHTML = `<h3>Welcome ${user.displayName}!</h3><p>Server-ku file access kudukka permission venum.</p>`;
     } catch (error) {
-        console.error("Login Error Details:", error);
+        console.error(error);
         alert("Login Error: " + error.message);
     }
 });
-
