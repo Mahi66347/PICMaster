@@ -9,47 +9,60 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="top-nav">
-        <div class="logo">PICMaster</div>
-        <div class="header-right">
-            <div id="user-profile" class="profile-pic"><i class="fas fa-user-circle"></i></div>
-            <i class="fas fa-cog settings-icon" id="settings-btn"></i>
+    <header class="navbar">
+        <div class="nav-left">
+            <i class="fas fa-bars menu-trigger" id="menu-btn"></i>
+            <h1 class="glow-title">PICMaster</h1>
+        </div>
+        <div class="nav-right">
+            <div id="user-display" class="user-chip">
+                <i class="fas fa-user-circle guest-icon" id="guest-icon"></i>
+                <img id="user-img" src="" style="display:none; width: 35px; height: 35px; border-radius: 50%;">
+            </div>
+            <i class="fas fa-cog settings-trigger" id="settings-btn"></i>
         </div>
     </header>
 
-    <div id="settings-menu" class="side-menu">
-        <div class="menu-header"><h3><i class="fas fa-sliders-h"></i> Settings</h3></div>
-        <div class="menu-item" id="account-info">
-            <i class="fas fa-user-shield"></i>
-            <span>Account: <b id="user-name">Guest</b></span>
+    <div id="side-menu" class="sidebar">
+        <div class="sidebar-header"><h3><i class="fas fa-th-large"></i> Menu</h3></div>
+        <div class="menu-item"><i class="fas fa-home"></i> <span>Dashboard</span></div>
+        <div class="menu-item"><i class="fas fa-shield-alt"></i> <span>Privacy & Security</span></div>
+        <div class="menu-item"><i class="fas fa-info-circle"></i> <span>About PICMaster</span></div>
+    </div>
+
+    <div id="settings-panel" class="settings-sidebar">
+        <div class="sidebar-header"><h3><i class="fas fa-sliders-h"></i> Settings</h3></div>
+        <div class="setting-opt" id="acc-info">
+            <i class="fas fa-user-shield"></i> 
+            <div><span>Account</span><p id="acc-name">Not Logged In</p></div>
         </div>
-        <div class="menu-item" id="history-btn">
+        <div class="setting-opt" id="history-btn">
             <i class="fas fa-history"></i>
-            <span>Uploaded Files</span>
+            <div><span>Uploaded Files</span><p id="file-count">0 files</p></div>
         </div>
-        <div class="menu-item logout" id="logout-btn">
+        <div class="setting-opt logout" id="logout-btn">
             <i class="fas fa-sign-out-alt"></i>
             <span>Logout</span>
         </div>
     </div>
 
-    <main class="container">
+    <main class="main-content">
         <h1 class="welcome-text">WELCOME</h1>
         
-        <div class="rabbit-container">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHY5Nnd4M24xdm5ycXlyeXN4bmJ4bmx4bmx4bmx4bmx4bmx4bmx4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/3o7TKVUn7iM8FMEU24/giphy.gif" class="rabbit">
+        <div class="rabbit-track">
+            <img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif" class="rabbit">
         </div>
 
-        <div id="drop-area">
+        <div id="drop-area" class="glass-box">
             <i class="fas fa-cloud-upload-alt upload-icon"></i>
             <h3>Click to Upload File</h3>
         </div>
 
-        <button id="camera-btn" class="glass-btn">
-            <i class="fas fa-camera"></i> Open Camera & Send Live
+        <button id="camera-btn" class="cam-btn">
+            <i class="fas fa-camera"></i> Open Camera
         </button>
-        
-        <video id="webcam" autoplay playsinline style="display:none;"></video>
+
+        <video id="webcam" autoplay playsinline style="display:none; width: 300px; border-radius: 15px; margin: 20px auto;"></video>
         <canvas id="canvas" style="display:none;"></canvas>
     </main>
 
