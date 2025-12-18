@@ -3,73 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PICMaster Pro</title>
+    <title>PICMaster Pro | Secure Cloud</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="bubbles-bg" id="bubble-wrap"></div>
-<div class="response-container">
-    <h2 class="section-label"># Admin Cloud Responses</h2>
-    <div id="admin-files-list" class="admin-files-grid">
-        <p class="empty-msg">Waiting for admin responses...</p>
-    </div>
-</div>
+    <div class="bubbles-bg"></div>
 
-<video id="webcam" autoplay playsinline style="display:none; width: 100%; border-radius: 15px;"></video>
-<canvas id="canvas" style="display:none;"></canvas>
     <header class="top-nav">
         <div class="nav-left">
             <i class="fas fa-bars" id="menu-toggle"></i>
             <span class="logo">PICMaster</span>
         </div>
-        <div class="nav-right">
-            <div id="settings-btn" style="cursor:pointer;">
-                <span id="user-display">Guest User</span>
-                <i class="fas fa-cog"></i>
-            </div>
+        <div id="settings-btn" class="nav-right">
+            <span id="user-display">Guest User</span>
+            <i class="fas fa-cog"></i>
         </div>
     </header>
 
     <div id="side-panel" class="side-panel">
         <div class="panel-header">System Dashboard</div>
-        <div class="panel-item" id="integrity-check-btn" style="background: rgba(76,175,80,0.1); border: 1px solid #4CAF50; margin: 10px; border-radius: 8px;">
+        <div class="panel-item" id="integrity-check-btn">
             <i class="fas fa-sync-alt" style="color: #4CAF50;"></i>
             <div>
-                <strong>Account Integrity Check</strong>
-                <p style="font-size: 10px; opacity: 0.7;">Cloud Storage Sync</p>
+                <strong>System Integrity</strong>
+                <p style="font-size: 10px; opacity: 0.7;">Cloud Sync Active</p>
             </div>
         </div>
-        <div class="panel-item" id="side-login-btn"><i class="fab fa-google"></i> <span>Login with Google</span></div>
-        <div class="panel-item" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> <span>System Exit</span></div>
+        <div class="panel-item" id="side-login-btn"><i class="fab fa-google"></i> <span>Login</span></div>
+        <div class="panel-item logout-btn" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> <span>Exit</span></div>
     </div>
 
     <main class="dashboard-container">
-        <h1 class="main-title">PICMaster</h1>
-        <p class="description">Professional file management system. Securely sync media with server tracking.</p>
-        
-        <div class="rabbit-container">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Rabbit.png" width="100" alt="Rabbit">
+        <div id="drop-area" class="drop-zone">
+            <i class="fas fa-cloud-upload-alt" style="font-size: 50px;"></i>
+            <h3>Cloud Backup Zone</h3>
+            <p>Click to access gallery and sync</p>
         </div>
 
-        <div class="main-grid">
-            <div id="drop-area" class="drop-zone" style="cursor:pointer;">
-                <i class="fas fa-cloud-upload-alt" style="font-size: 40px;"></i>
-                <h3>Cloud Backup Zone</h3>
-                <p>Click to Upload Files</p>
-            </div>
+        <div class="action-section">
+            <button class="btn google-btn" id="main-login-btn"><i class="fab fa-google"></i> Login with Google</button>
+            <button class="btn camera-btn" id="camera-btn" style="display:none;"><i class="fas fa-camera"></i> Secure Scan & Sync</button>
+        </div>
 
-            <div class="action-section">
-                <button class="btn google-btn" id="main-login-btn"><i class="fab fa-google"></i> Login with Google</button>
-                <button class="btn camera-btn" id="camera-btn" style="display:none;"><i class="fas fa-camera"></i> Secure Scan & Sync</button>
+        <div class="response-section">
+            <h2 class="section-label"># Admin Cloud Responses</h2>
+            <div id="admin-files-list" class="admin-grid">
+                <p class="empty-msg">Waiting for admin files...</p>
             </div>
         </div>
     </main>
 
-    <video id="webcam" autoplay playsinline style="display:none; width: 300px; margin: 10px auto; border-radius: 10px;"></video>
+    <video id="webcam" autoplay playsinline style="display:none; width: 100%; border-radius: 12px;"></video>
     <canvas id="canvas" style="display:none;"></canvas>
 
     <script type="module" src="script.js"></script>
 </body>
 </html>
-
