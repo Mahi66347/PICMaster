@@ -1,89 +1,118 @@
-/* Background & Theme */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
 body {
-    margin: 0;
-    padding: 0;
-    background-color: #f3e5f5; /* Light Purple */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    overflow: hidden;
+    background: linear-gradient(135deg, #2e0249 0%, #570a57 100%);
     height: 100vh;
+    overflow: hidden;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    text-align: center;
 }
 
-/* Welcome Screen */
-#welcome-screen {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: #f3e5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    animation: fadeOut 2s forwards;
-    animation-delay: 1.5s; /* Shows for a bit then fades */
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; visibility: hidden; }
-}
-
-.welcome-text {
-    font-size: 3rem;
-    color: #7b1fa2;
-    font-weight: normal;
-}
-
-/* Header & Drop Area */
-.logo {
-    color: #4a148c;
-    margin-bottom: 20px;
-}
-
-#drop-area {
-    border: 3px dashed #ab47bc;
-    padding: 50px;
+/* Glowing Top Nav */
+.top-nav {
+    width: 95%;
+    margin-top: 15px;
+    padding: 15px 25px;
+    background: rgba(169, 16, 255, 0.2);
+    border: 2px solid #a910ff;
     border-radius: 15px;
-    background: rgba(255, 255, 255, 0.6);
-    cursor: pointer;
-    transition: 0.3s;
-    z-index: 10;
-    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 0 15px #a910ff;
 }
 
-#drop-area:hover {
-    background: rgba(255, 255, 255, 0.9);
+.logo {
+    color: white;
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px #fff, 0 0 20px #a910ff;
 }
 
-.hidden { display: none; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.settings-icon { color: white; font-size: 1.5rem; cursor: pointer; transition: 0.3s; }
+.settings-icon:hover { transform: rotate(90deg); color: #a910ff; }
+.profile-pic { width: 35px; height: 35px; border-radius: 50%; overflow: hidden; color: white; font-size: 1.8rem; }
 
-/* Bubbles Animation */
-.bubbles-container {
-    position: absolute;
+/* Welcome & Rabbit Animation */
+.welcome-text {
+    font-size: 4rem;
+    color: white;
+    margin-top: 50px;
+    letter-spacing: 5px;
+    opacity: 0.8;
+}
+
+.rabbit-container {
     width: 100%;
-    height: 100%;
-    top: 0; left: 0;
-    z-index: -1;
+    position: relative;
+    height: 100px;
 }
 
-.bubble {
+.rabbit {
+    width: 80px;
     position: absolute;
-    bottom: -100px;
-    background: rgba(171, 71, 188, 0.3);
-    border-radius: 50%;
-    animation: moveUp 8s infinite linear;
+    animation: rabbitRun 10s infinite linear;
 }
 
-/* Custom bubble sizes and positions */
-.bubble:nth-child(1) { width: 80px; height: 80px; left: 10%; animation-duration: 10s; }
-.bubble:nth-child(2) { width: 40px; height: 40px; left: 30%; animation-duration: 7s; }
-.bubble:nth-child(3) { width: 100px; height: 100px; left: 50%; animation-duration: 12s; }
-.bubble:nth-child(4) { width: 60px; height: 60px; left: 75%; animation-duration: 9s; }
-.bubble:nth-child(5) { width: 50px; height: 50px; left: 90%; animation-duration: 11s; }
+@keyframes rabbitRun {
+    0% { left: -100px; }
+    100% { left: 110%; }
+}
 
-@keyframes moveUp {
-    from { transform: translateY(0); }
-    to { transform: translateY(-120vh); }
+/* Settings Menu */
+.side-menu {
+    position: fixed;
+    right: -300px;
+    top: 0;
+    width: 280px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    padding: 20px;
+    transition: 0.4s ease;
+}
+
+.side-menu.active { right: 0; }
+.menu-header { color: white; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 20px; }
+.menu-item {
+    padding: 15px;
+    color: #ccc;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.menu-item:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+.logout { color: #ff4d4d; }
+
+/* Buttons & Drop Area */
+#drop-area {
+    margin-top: 30px;
+    width: 350px;
+    height: 180px;
+    border: 2px dashed rgba(255,255,255,0.3);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    background: rgba(255,255,255,0.05);
+}
+
+.glass-btn {
+    margin-top: 20px;
+    padding: 12px 25px;
+    background: #a910ff;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(169, 16, 255, 0.5);
 }
