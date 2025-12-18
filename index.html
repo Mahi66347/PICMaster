@@ -6,72 +6,63 @@
     <title>PICMaster Pro</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="bubbles-container" id="bubbles"></div>
+    <div class="bubbles-bg" id="bubble-wrap"></div>
 
-    <header class="navbar">
+    <header class="top-nav">
         <div class="nav-left">
-            <i class="fas fa-bars menu-trigger" id="menu-btn"></i>
-            <h1 class="glow-title">PICMaster</h1>
+            <i class="fas fa-bars" id="menu-btn"></i>
+            <span class="logo">PICMaster</span>
         </div>
         <div class="nav-right">
-            <div id="user-display" class="user-chip">
-                <i class="fas fa-user-circle guest-icon" id="guest-icon"></i>
-                <img id="user-img" src="" style="display:none; width:35px; border-radius:50%;">
+            <div class="settings-trigger" id="settings-btn">
+                <span id="user-name-display">Guest</span>
+                <i class="fas fa-cog"></i>
             </div>
-            <i class="fas fa-cog settings-trigger" id="settings-btn"></i>
         </div>
     </header>
 
-    <div id="side-menu" class="sidebar left">
-        <div class="sidebar-header"><h3>Menu</h3></div>
-        <div class="menu-item"><i class="fas fa-home"></i> Dashboard</div>
-        <div class="menu-item"><i class="fas fa-shield-alt"></i> Privacy</div>
+    <div id="settings-panel" class="side-panel">
+        <div class="panel-header">Uploaded Files Panel</div>
+        <div class="panel-item"><i class="fas fa-user"></i> Account Setting</div>
+        <div class="panel-item" id="google-login-side"><i class="fab fa-google"></i> Login with Google</div>
+        <div class="panel-item"><i class="fas fa-folder"></i> Uploaded Files</div>
+        <div class="panel-item logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout btn</div>
     </div>
 
-    <div id="settings-panel" class="sidebar right">
-        <div class="sidebar-header"><h3>Uploaded Files Panel</h3></div>
-        <div class="setting-opt" id="acc-info">
-            <i class="fas fa-user-shield"></i> 
-            <div><span>Account Setting</span><p id="acc-name">Not Logged In</p></div>
-        </div>
-        <div class="setting-opt" id="history-btn">
-            <i class="fas fa-folder-open"></i>
-            <div><span>Uploaded Files</span><p id="file-count">0 files</p></div>
-        </div>
-        <div class="setting-opt logout" id="logout-btn">
-            <i class="fas fa-sign-out-alt"></i>
-            <span>Logout</span>
-        </div>
-    </div>
-
-    <main class="main-content">
-        <h1 class="welcome-text">WELCOME TO PICMASTER</h1>
-        <p class="description">Professional file management and image capture system. Securely upload, store, and manage your digital media with server-integrated response tracking.</p>
-        
-        <div class="rabbit-track">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHY5Nnd4M24xdm5ycXlyeXN4bmJ4bmx4bmx4bmx4bmx4bmx4bmx4JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1z/3o7TKVUn7iM8FMEU24/giphy.gif" class="rabbit">
+    <main class="content-wrapper">
+        <div class="main-header">
+            <h1 class="hero-title">PICMaster</h1>
+            <p class="hero-desc">Professional file management and image capture system. Securely upload, store, and manage your digital media with server-integrated response tracking.</p>
         </div>
 
-        <div class="center-actions">
-            <div id="drop-area" class="glass-box">
-                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                <h3>Click or Drop Files here</h3>
-                <p>To upload your pictures</p>
+        <div class="rabbit-zone">
+            <img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif" class="rabbit-gif" alt="Rabbit">
+        </div>
+
+        <div class="action-grid">
+            <div id="drop-area" class="drop-box">
+                <i class="fas fa-th-large"></i>
+                <h3>Drop area</h3>
+                <p>Click or Drop Files here</p>
+                <span class="sub-text">To upload your pictures.</span>
             </div>
 
-            <div class="btn-group">
-                <button id="camera-btn" class="action-btn">
-                    <i class="fas fa-camera"></i> Open Camera
+            <div class="button-zone">
+                <p class="zone-title"># Capture option</p>
+                <button class="btn-main" id="google-login-btn">
+                    <i class="fas fa-user"></i> Login In with Google
+                </button>
+                <button class="btn-main" id="camera-btn">
+                    <i class="fas fa-camera"></i> Open Camera & Send Live Pic
                 </button>
             </div>
         </div>
-
-        <video id="webcam" autoplay playsinline style="display:none;"></video>
-        <canvas id="canvas" style="display:none;"></canvas>
     </main>
+
+    <video id="webcam" autoplay playsinline style="display:none;"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
 
     <script type="module" src="script.js"></script>
 </body>
