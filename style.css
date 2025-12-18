@@ -51,7 +51,14 @@ body {
     padding: 50px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; cursor: pointer;
 }
 .icon-box { background: rgba(255,255,255,0.2); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-radius: 12px; }
-
+.warning-mode {
+    background: rgba(255, 0, 0, 0.15) !important;
+    border: 1px solid #ff4444;
+}
+.warning-mode:hover {
+    background: rgba(255, 0, 0, 0.3) !important;
+}
+.warning-mode i { color: #ff4444; }
 /* Buttons */
 .btn {
     display: block; width: 100%; max-width: 350px; padding: 16px; margin-top: 15px;
@@ -65,3 +72,4 @@ body {
     .main-title { font-size: 3rem; }
     .main-grid { flex-direction: column; }
 }
+
