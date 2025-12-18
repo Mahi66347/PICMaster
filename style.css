@@ -1,59 +1,67 @@
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+/* Official Look for PC/Mobile */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 
 body {
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-    color: white; min-height: 100vh; overflow-x: hidden; /* Scroll enable panni irukkaen */
+    background: linear-gradient(135deg, #5b21b6 0%, #1e40af 100%);
+    color: white; min-height: 100vh; overflow-x: hidden;
 }
 
 .bubbles-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
-.bubble {
-    position: absolute; background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%; animation: float 8s infinite ease-in;
-}
-@keyframes float { from { transform: translateY(100vh); opacity: 0.6; } to { transform: translateY(-10vh); opacity: 0; } }
+.bubble { position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%; animation: rise 10s infinite; }
+@keyframes rise { from { transform: translateY(100vh); opacity: 0; } to { transform: translateY(-10vh); opacity: 0.5; } }
 
 .top-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 15px 40px; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+    display: flex; justify-content: space-between; padding: 15px 5%;
+    background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
 }
-.logo { font-size: 1.5rem; font-weight: bold; margin-left: 15px; }
+.logo { font-size: 1.6rem; font-weight: bold; margin-left: 10px; }
+.menu-trigger { cursor: pointer; font-size: 1.4rem; }
 
+/* Side Panel */
 .side-panel {
     position: fixed; right: -320px; top: 0; width: 300px; height: 100%;
-    background: rgba(255, 255, 255, 0.95); color: #333; z-index: 100;
-    transition: 0.4s ease; padding: 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.95); color: #1a1a1a; z-index: 1000;
+    transition: 0.4s; padding: 30px 20px; box-shadow: -10px 0 30px rgba(0,0,0,0.3);
 }
 .side-panel.active { right: 0; }
-.panel-header { font-weight: bold; margin-bottom: 25px; color: #6a11cb; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
-.panel-item { padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-radius: 8px; transition: 0.2s; }
-.panel-item:hover { background: #f0f0f0; }
+.panel-header { font-size: 1.2rem; font-weight: bold; border-bottom: 1px solid #ddd; padding-bottom: 15px; margin-bottom: 20px; color: #5b21b6; }
+.panel-item { padding: 15px; display: flex; align-items: center; gap: 12px; cursor: pointer; border-radius: 10px; transition: 0.3s; }
+.panel-item:hover { background: #f3f4f6; color: #5b21b6; }
 
-.content-wrapper { max-width: 1000px; margin: 40px auto; padding: 20px; text-align: left; }
-.hero-title { font-size: 4rem; font-weight: 800; margin-bottom: 10px; }
-.hero-desc { font-size: 1rem; opacity: 0.8; max-width: 600px; line-height: 1.6; margin-bottom: 30px; }
+/* Main UI */
+.dashboard-container { max-width: 1100px; margin: 50px auto; padding: 0 5%; }
+.main-title { font-size: 4.5rem; letter-spacing: -2px; }
+.description { opacity: 0.8; max-width: 700px; line-height: 1.6; margin: 15px 0 40px 0; }
 
-.rabbit-zone { position: relative; width: 100%; height: 120px; }
-.rabbit-gif { 
-    width: 100px; position: absolute; bottom: 0; 
-    animation: bounceRun 15s infinite linear; 
-}
-@keyframes bounceRun { 
-    0% { left: -100px; transform: scaleX(1); } 
-    45% { transform: scaleX(1); }
-    50% { left: 90%; transform: scaleX(-1); } 
-    95% { transform: scaleX(-1); }
-    100% { left: -100px; transform: scaleX(1); } 
+/* Rabbit Animation Fix */
+.rabbit-container { height: 120px; position: relative; width: 100%; }
+.rabbit-img { width: 80px; position: absolute; animation: moveRabbit 12s infinite linear; }
+@keyframes moveRabbit {
+    0% { left: -100px; transform: scaleX(1); }
+    48% { transform: scaleX(1); }
+    50% { left: 90%; transform: scaleX(-1); }
+    98% { transform: scaleX(-1); }
+    100% { left: -100px; transform: scaleX(1); }
 }
 
-.action-grid { display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; }
-.drop-box {
-    background: rgba(255, 255, 255, 0.2); border: 2px dashed rgba(255,255,255,0.4);
-    padding: 40px; border-radius: 20px; width: 350px; text-align: center; cursor: pointer;
+/* Drop Area */
+.main-grid { display: flex; gap: 50px; flex-wrap: wrap; }
+.drop-zone {
+    background: rgba(255, 255, 255, 0.15); border: 2px dashed rgba(255,255,255,0.4);
+    padding: 50px; border-radius: 25px; width: 100%; max-width: 400px; text-align: center; cursor: pointer;
 }
-.btn-main {
-    display: block; width: 320px; padding: 15px; margin-top: 15px;
-    background: rgba(255, 255, 255, 0.3); border: none; border-radius: 50px;
-    color: white; font-weight: 600; cursor: pointer; transition: 0.3s; text-align: left; padding-left: 25px;
+.icon-box { background: rgba(255,255,255,0.2); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; border-radius: 12px; }
+
+/* Buttons */
+.btn {
+    display: block; width: 100%; max-width: 350px; padding: 16px; margin-top: 15px;
+    border-radius: 50px; border: none; font-weight: 600; cursor: pointer; transition: 0.3s;
+    background: rgba(255,255,255,0.2); color: white; text-align: left; padding-left: 30px;
 }
-.btn-main:hover { background: rgba(255, 255, 255, 0.5); }
-.zone-title { font-weight: bold; margin-bottom: 15px; font-size: 1.2rem; }
+.btn:hover { background: rgba(255,255,255,0.4); transform: translateY(-2px); }
+.section-label { margin-bottom: 15px; font-size: 1.2rem; }
+
+@media (max-width: 768px) {
+    .main-title { font-size: 3rem; }
+    .main-grid { flex-direction: column; }
+}
