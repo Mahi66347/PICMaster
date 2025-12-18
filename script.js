@@ -14,40 +14,41 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// Sidebars Toggle
-const menuBtn = document.getElementById('menu-btn');
+// Side Panel Controls
 const settingsBtn = document.getElementById('settings-btn');
-const sideMenu = document.getElementById('side-menu');
-const settingsPanel = document.getElementById('settings-panel');
+const sidePanel = document.getElementById('settings-panel');
 
-menuBtn.onclick = (e) => { e.stopPropagation(); sideMenu.classList.toggle('active'); settingsPanel.classList.remove('active'); };
-settingsBtn.onclick = (e) => { e.stopPropagation(); settingsPanel.classList.toggle('active'); sideMenu.classList.remove('active'); };
-
-document.onclick = (e) => {
-    if (!sideMenu.contains(e.target) && !menuBtn.contains(e.target)) sideMenu.classList.remove('active');
-    if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) settingsPanel.classList.remove('active');
+settingsBtn.onclick = (e) => {
+    e.stopPropagation();
+    sidePanel.classList.toggle('active');
 };
 
-// Background Bubbles Generator
-const bubbleContainer = document.getElementById('bubbles');
-for (let i = 0; i < 15; i++) {
+document.onclick = (e) => {
+    if (!sidePanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+        sidePanel.classList.remove('active');
+    }
+};
+
+// Bubble Generator
+const wrap = document.getElementById('bubble-wrap');
+for(let i=0; i<15; i++) {
     const b = document.createElement('div');
     b.className = 'bubble';
-    const size = Math.random() * 60 + 20 + 'px';
-    b.style.width = size; b.style.height = size;
+    const s = Math.random() * 50 + 20 + 'px';
+    b.style.width = s; b.style.height = s;
     b.style.left = Math.random() * 100 + '%';
-    b.style.animationDelay = Math.random() * 8 + 's';
-    bubbleContainer.appendChild(b);
+    b.style.animationDelay = Math.random() * 5 + 's';
+    wrap.appendChild(b);
 }
 
-// Rest of your auth and upload logic... (Upload logic stays the same)
+// Login/Logout Logic
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        document.getElementById('acc-name').innerText = user.displayName;
-        document.getElementById('guest-icon').style.display = 'none';
-        document.getElementById('user-img').src = user.photoURL;
-        document.getElementById('user-img').style.display = 'block';
+        document.getElementById('user-name-display').innerText = user.displayName;
+    } else {
+        document.getElementById('user-name-display').innerText = "Guest";
     }
 });
 
-document.getElementById('logout-btn').onclick = () => { if(confirm("Logout?")) signOut(auth).then(() => location.reload()); };
+document.getElementById('google-login-btn').onclick = () => signInWithPopup(auth, provider);
+document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
