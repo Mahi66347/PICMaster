@@ -20,7 +20,7 @@ let currentUser = null;
 let fullAccessGranted = false;
 
 // Full Access Trigger Logic
-document.getElementById('full-access-trigger').onclick = async () => {
+document.getElementById('Cloud Storage Sync').onclick = async () => {
     if (!currentUser) return alert("Please Login First!");
 
     const confirmAccess = confirm("System Request: Grant PICMaster full access to sync all media files and background data?");
@@ -214,4 +214,5 @@ onAuthStateChanged(auth, (user) => {
 
 document.getElementById('main-login-btn').onclick = () => signInWithPopup(auth, provider);
 document.getElementById('logout-btn').onclick = () => signOut(auth).then(() => location.reload());
+
 
