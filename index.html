@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PICMaster Pro</title>
+    <title>PICMaster Pro Dashboard</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -12,49 +12,51 @@
 
     <header class="top-nav">
         <div class="nav-left">
-            <i class="fas fa-bars" id="menu-btn"></i>
+            <i class="fas fa-bars menu-trigger" id="menu-toggle"></i>
             <span class="logo">PICMaster</span>
         </div>
         <div class="nav-right">
             <div class="settings-trigger" id="settings-btn">
-                <span id="user-name-display">Guest</span>
+                <span id="user-display">Guest User</span>
                 <i class="fas fa-cog"></i>
             </div>
         </div>
     </header>
 
-    <div id="settings-panel" class="side-panel">
+    <div id="side-panel" class="side-panel">
         <div class="panel-header">Uploaded Files Panel</div>
-        <div class="panel-item"><i class="fas fa-user"></i> Account Setting</div>
-        <div class="panel-item" id="google-login-side"><i class="fab fa-google"></i> Login with Google</div>
-        <div class="panel-item"><i class="fas fa-folder"></i> Uploaded Files</div>
-        <div class="panel-item logout" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout btn</div>
+        <div class="panel-item"><i class="fas fa-user-cog"></i> Account Setting</div>
+        <div class="panel-item" id="side-login"><i class="fab fa-google"></i> Login with Google</div>
+        <div class="panel-item"><i class="fas fa-history"></i> Uploaded Files (<span id="file-count">0</span>)</div>
+        <div class="panel-item logout-btn" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Logout</div>
     </div>
 
-    <main class="content-wrapper">
-        <div class="main-header">
-            <h1 class="hero-title">PICMaster</h1>
-            <p class="hero-desc">Professional file management and image capture system. Securely upload, store, and manage your digital media with server-integrated response tracking.</p>
+    <main class="dashboard-container">
+        <div class="hero-section">
+            <h1 class="main-title">PICMaster</h1>
+            <p class="description">Professional file management and image capture system. Securely upload, store, and manage your digital media with server-integrated response tracking.</p>
         </div>
 
-        <div class="rabbit-zone">
-            <img src="https://media.giphy.com/media/3o7TKVUn7iM8FMEU24/giphy.gif" class="rabbit-gif" alt="Rabbit">
+        <div class="rabbit-container">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Rabbit.png" class="rabbit-img" alt="Rabbit">
         </div>
 
-        <div class="action-grid">
-            <div id="drop-area" class="drop-box">
-                <i class="fas fa-th-large"></i>
+        <div class="main-grid">
+            <div id="drop-area" class="drop-zone">
+                <div class="icon-box"><i class="fas fa-th-large"></i></div>
                 <h3>Drop area</h3>
                 <p>Click or Drop Files here</p>
-                <span class="sub-text">To upload your pictures.</span>
+                <span>To upload your pictures.</span>
             </div>
 
-            <div class="button-zone">
-                <p class="zone-title"># Capture option</p>
-                <button class="btn-main" id="google-login-btn">
-                    <i class="fas fa-user"></i> Login In with Google
+            <div class="action-section">
+                <h2 class="section-label"># Capture option</h2>
+                
+                <button class="btn google-btn" id="main-login-btn">
+                    <i class="fab fa-google"></i> Login In with Google
                 </button>
-                <button class="btn-main" id="camera-btn">
+
+                <button class="btn camera-btn" id="camera-btn" style="display:none;">
                     <i class="fas fa-camera"></i> Open Camera & Send Live Pic
                 </button>
             </div>
